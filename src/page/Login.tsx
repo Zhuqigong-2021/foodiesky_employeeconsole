@@ -3,14 +3,14 @@ import Logo from "../assets/Logo.svg";
 import { useEffect, useState } from "react";
 import inputHelper from "../helper/inputHelper";
 import { useLoginUserMutation } from "../Apis/authApi";
-import { userModel } from "../interfaces";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLoggedInUser } from "../Storage/redux/userAuthSlice";
 import apiResponse from "../interfaces/apiResponse";
-import MainSpinner from "../common/MainSpinner";
-import { json } from "stream/consumers";
+
 import MiniSpinner from "../common/MiniSpinner";
+import { message } from "antd";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -62,17 +62,15 @@ const Login = () => {
     // console.log(userInput.password);
 
     if (response.data!.data) {
-      //   const { token } = response.data;
       const { id, name, username, token } = response.data!.data;
-      //   const { fullName, id, email, role }: userModel = jwt_decode(token);
-      //   localStorage.setItem("token", token);
-      //   console.log(response.data.result);
+
       localStorage.setItem(
         "currentUser",
         JSON.stringify({ id, name, username, token })
       );
       dispatch(setLoggedInUser({ id, name, username, token }));
       navigate("/dashboard");
+      message.info(`you have succucessfully logged in`);
     } else {
       setError(response.data?.msg);
     }

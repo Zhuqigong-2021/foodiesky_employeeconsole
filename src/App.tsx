@@ -1,12 +1,9 @@
 import "./App.css";
-// import {
-//   MenuFoldOutlined,
-//   MenuUnfoldOutlined,
-//   UploadOutlined,
-//   UserOutlined,
-//   VideoCameraOutlined,
-// } from '@ant-design/icons';
-import { AiFillSetting, AiOutlineMenuFold } from "react-icons/ai";
+import {
+  AiFillSetting,
+  AiOutlineMenuFold,
+  AiOutlineMenuUnfold,
+} from "react-icons/ai";
 import { BsFillHouseExclamationFill } from "react-icons/bs";
 import { BsFillPersonFill } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
@@ -15,14 +12,10 @@ import { BiSolidDish } from "react-icons/bi";
 import { CgTrending } from "react-icons/cg";
 import { Layout, Menu, Button } from "antd";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import DashBoard from "./page/DashBoard";
-import Statistics from "./page/Statistics";
-import Login from "./page/Login";
-import OrderManagement from "./page/OrderManagement";
+
 import SkyLogo from "./assets/Logo.svg";
-import DishManagement from "./page/DishManagement";
-import CategoryManagement from "./page/CategoryManagement";
-import EmployeeManagement from "./page/EmployeeManagement";
+import smallSkyLogo from "./assets/smallLogo.svg";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Storage/redux/store";
 import { userModel } from "./interfaces";
@@ -34,8 +27,17 @@ const { Header, Sider, Content } = Layout;
 import type { MenuProps } from "antd";
 import { Dropdown, message, Space } from "antd";
 
-import WithAuth from "./HOC/WithAuth";
 import PrivateRoute from "./HOC/ProtectedRoute";
+import useScreenSize from "./helper/useScreenSize";
+import {
+  CategoryManagement,
+  DashBoard,
+  DishManagement,
+  EmployeeManagement,
+  Login,
+  OrderManagement,
+  Statistics,
+} from "./page";
 
 const items: MenuProps["items"] = [
   {
@@ -50,6 +52,7 @@ const items: MenuProps["items"] = [
 function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { width } = useScreenSize();
   const [collapsed, setCollapsed] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
   const [status, setStatus] = useState(false);
@@ -59,6 +62,7 @@ function App() {
 
     dispatch(setLoggedInUser({ ...emptyUserState }));
     navigate("/login");
+    message.info(`system logged out`);
   }
   const userData: userModel = useSelector(
     (state: RootState) => state.userAuthStore
@@ -70,6 +74,12 @@ function App() {
       dispatch(setLoggedInUser(JSON.parse(localToken)));
     }
   }, []);
+  useEffect(() => {
+    if (width < 700) {
+      setCollapsed(true);
+    }
+    console.log(width);
+  }, [width]);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     if (key == "1") {
@@ -83,48 +93,74 @@ function App() {
 
   return (
     <Layout className="w-full  flex-1 h-screen relative">
-      {/* <Routes>
-        <Route path="/login" element={<Login />} />
-      </Routes> */}
-      <Header className="bg-yellow-400 flex items-center space-x-4 ">
-        <img src={SkyLogo} alt="foodie-sky" className="w-32 " />
+      <Header className="bg-yellow-400 flex items-center space-x-6 ">
+        {!collapsed && <img src={SkyLogo} alt="foodie-sky" className="w-32 " />}
+        {collapsed && (
+          <img
+            src={smallSkyLogo}
+            alt="foodie-sky"
+            className="w-12 -translate-x-8 "
+          />
+        )}
 
         <div className="flex justify-between border-red-400 w-full items-center">
-          <div className="ml-4 flex items-center">
+          <div className="flex items-center">
             {/* <AiOutlineMenuFold className="scale-150 " /> */}
             <Button
               type="text"
               icon={
                 collapsed ? (
-                  <AiOutlineMenuFold className="scale-150 " />
+                  <AiOutlineMenuUnfold className="scale-150 -translate-x-10 translate-y-1" />
                 ) : (
-                  <AiOutlineMenuFold className="scale-150 " />
+                  <AiOutlineMenuFold className="scale-150 translate-y-1" />
                 )
               }
               onClick={() => setCollapsed(!collapsed)}
             />
-            {!status && (
-              <span className="  h-4  items-center justify-center ml-4  flex space-x-2">
-                <span className="w-3 h-3  rounded-full bg-rose-500 shadow-sm shadow-red-500"></span>
-                <span
-                  className="text-[13px] text-red-500 font-bold"
-                  style={{ textShadow: "0,0,2px pink" }}
-                >
-                  close
+            {!status &&
+              (collapsed ? (
+                <span className="  h-4  items-center justify-center ml-4  flex space-x-2 -translate-x-14">
+                  <span className="w-3 h-3  rounded-full bg-rose-500 shadow-sm shadow-red-500"></span>
+                  <span
+                    className="text-[13px] text-red-500 font-bold"
+                    style={{ textShadow: "0,0,2px pink" }}
+                  >
+                    close
+                  </span>
                 </span>
-              </span>
-            )}
-            {status && (
-              <span className="  h-4  items-center justify-center ml-4  flex space-x-2">
-                <span className="w-3 h-3  rounded-full bg-green-500 shadow-sm shadow-green-700"></span>
-                <span
-                  className="text-[13px] text-emerald-600 font-bold"
-                  style={{ textShadow: "0,0,2px pink" }}
-                >
-                  open
+              ) : (
+                <span className="  h-4  items-center justify-center ml-2  flex space-x-2">
+                  <span className="w-3 h-3  rounded-full bg-rose-500 shadow-sm shadow-red-500"></span>
+                  <span
+                    className="text-[13px] text-red-500 font-bold"
+                    style={{ textShadow: "0,0,2px pink" }}
+                  >
+                    close
+                  </span>
                 </span>
-              </span>
-            )}
+              ))}
+            {status &&
+              (collapsed ? (
+                <span className="  h-4  items-center justify-center ml-4  flex space-x-2 -translate-x-14">
+                  <span className="w-3 h-3  rounded-full bg-green-500 shadow-sm shadow-green-700"></span>
+                  <span
+                    className="text-[13px] text-emerald-600 font-bold"
+                    style={{ textShadow: "0,0,2px pink" }}
+                  >
+                    open
+                  </span>
+                </span>
+              ) : (
+                <span className="  h-4  items-center justify-center ml-2  flex space-x-2">
+                  <span className="w-3 h-3  rounded-full bg-green-500 shadow-sm shadow-green-700"></span>
+                  <span
+                    className="text-[13px] text-emerald-600 font-bold"
+                    style={{ textShadow: "0,0,2px pink" }}
+                  >
+                    open
+                  </span>
+                </span>
+              ))}
           </div>
           <div className="md:flex lg:flex items-center space-x-4 hidden ">
             <Dropdown menu={{ items, onClick }}>
