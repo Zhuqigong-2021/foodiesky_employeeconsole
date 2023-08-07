@@ -15,6 +15,7 @@ import { message } from "antd";
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const [loginUser] = useLoginUserMutation();
@@ -61,27 +62,29 @@ const Login = () => {
     // console.log(userInput.userName);
     // console.log(userInput.password);
 
-    if (response.data!.data) {
-      const { id, name, username, token } = response.data!.data;
+    if (response.data) {
+      if (response.data.data) {
+        const { id, name, username, token } = response.data!.data;
 
-      localStorage.setItem(
-        "currentUser",
-        JSON.stringify({ id, name, username, token })
-      );
-      dispatch(setLoggedInUser({ id, name, username, token }));
-      navigate("/dashboard");
-      message.info(`you have succucessfully logged in`);
-    } else {
-      setError(response.data?.msg);
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({ id, name, username, token })
+        );
+        dispatch(setLoggedInUser({ id, name, username, token }));
+        navigate("/dashboard");
+        message.info(`you have succucessfully logged in`);
+      } else {
+        setError(response.data.msg);
+      }
     }
 
     setLoading(false);
   };
 
   return (
-    <div className="flex-1 bg-slate-600 w-full fixed top-0 left-0 bottom-0 right-0 z-50 flex items-center justify-center ">
-      <div className="flex bg-white rounded-lg h-[400px] w-[700px]  overflow-x-scroll m-2">
-        <div className="h-full overflow-hidden w-[300px] ">
+    <div className="flex-1 bg-slate-600 w-full fixed top-0 left-0 bottom-0 right-0 z-50 flex items-center justify-center overflow-x-scroll">
+      <div className="flex bg-white rounded-lg h-[400px] w-[700px] overflow-none m-2 no-scrollbar">
+        <div className="h-full overflow-hidden w-[300px] rounded-l-lg ">
           <img src={tofu} alt="tofo" className="h-full w-full object-cover" />
         </div>
 

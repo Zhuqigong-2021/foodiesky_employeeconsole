@@ -12,13 +12,13 @@ beforeEach(() => {
 });
 
 interface formProps {
-  email?: string;
+  username?: string;
   password?: string;
 }
-const typeIntoForm = async ({ email, password }: formProps) => {
-  const emailInputElement = screen.getByRole("textbox") as HTMLInputElement;
-  if (email) {
-    await userEvent.type(emailInputElement, email);
+const typeIntoForm = async ({ username, password }: formProps) => {
+  const usernameInputElement = screen.getByRole("textbox") as HTMLInputElement;
+  if (username) {
+    await userEvent.type(usernameInputElement, username);
   }
   const passwordInputElement = screen.getByLabelText(
     /password/i
@@ -26,7 +26,7 @@ const typeIntoForm = async ({ email, password }: formProps) => {
   if (password) {
     await userEvent.type(passwordInputElement, password);
   }
-  return { emailInputElement, passwordInputElement };
+  return { usernameInputElement, passwordInputElement };
 };
 
 const clickOnSubmit = async () => {
@@ -36,58 +36,54 @@ const clickOnSubmit = async () => {
 
 describe("default state", () => {
   it("initial render should be empty", () => {
-    expect(screen.getByLabelText<HTMLInputElement>(/Your Email/i).value).toBe(
-      ""
-    );
+    expect(screen.getByLabelText<HTMLInputElement>(/userName/i).value).toBe("");
     expect(screen.getByLabelText<HTMLInputElement>(/password/i).value).toBe("");
-    expect(screen.getByText(/Sign up/i)).toBeInTheDocument();
+    expect(screen.getByText(/sign in/i)).toBeInTheDocument();
+  });
+  it("should be able to type an email", async () => {
+    const { usernameInputElement } = await typeIntoForm({
+      username: "admin",
+    });
+    expect(usernameInputElement.value).toBe("admin");
+  });
+  it("should be able to type an password", async () => {
+    const { passwordInputElement } = await typeIntoForm({
+      password: "123456",
+    });
+    expect(passwordInputElement.value).toBe("123456");
   });
 });
 
-//   it("should be able to type an email", async () => {
-//     const { emailInputElement } = await typeIntoForm({
-//       email: "phil@gmail.com",
-//     });
-//     expect(emailInputElement.value).toBe("phil@gmail.com");
-//   });
+describe("error handling", () => {
+  it("should show error user or password is empty", async () => {
+    //validation error is not there
 
-//   it("should be able to type an password", async () => {
-//     const { passwordInputElement } = await typeIntoForm({
-//       password: "123123",
-//     });
-//     expect(passwordInputElement.value).toBe("123123");
-//   });
-// });
+    expect(
+      screen.queryByText(/User name or password is incorrect/i)
+    ).not.toBeInTheDocument();
 
-// describe("error handling", () => {
-//   it("should show error user or password is empty", async () => {
-//     //validation error is not there
+    //no input
 
-//     expect(
-//       screen.queryByText(/Username or password is incorrect/i)
-//     ).not.toBeInTheDocument();
+    await clickOnSubmit();
+    expect(screen.queryByText(/user name is empty/i)).toBeInTheDocument();
 
-//     //no input
+    //just type email without the password
+    await typeIntoForm({ username: "admin" });
+    await clickOnSubmit();
+    expect(screen.queryByText(/password is empty/i)).toBeInTheDocument();
+  });
 
-//     await clickOnSubmit();
-//     expect(screen.queryByText(/user name is empty/i)).toBeInTheDocument();
+  it("should show no error if user input is valid", async () => {
+    //type legal username and password
+    await typeIntoForm({ username: "admin", password: "123456" });
 
-//     //just type email without the password
-//     await typeIntoForm({ email: "phil@gmail.com" });
-//     await clickOnSubmit();
-//     expect(screen.queryByText(/password is empty/i)).toBeInTheDocument();
-//   });
+    await clickOnSubmit();
 
-//   it("should show no error if user input is valid", async () => {
-//     //type legal username and password
-//     await typeIntoForm({ email: "phil@gmail.com", password: "123123" });
-
-//     await clickOnSubmit();
-
-//     //suppose error not to be in the doc
-//     expect(
-//       screen.queryByText(/Username or password is incorrect/i)
-//     ).not.toBeInTheDocument();
-//     expect(screen.queryByText(/user name is empty/i)).not.toBeInTheDocument();
-//     expect(screen.queryByText(/password is empty/i)).not.toBeInTheDocument();
-//   });
+    //suppose error not to be in the doc
+    // expect(
+    //   screen.queryByText(/Username or password is incorrect/i)
+    // ).not.toBeInTheDocument();
+    expect(screen.queryByText(/user name is empty/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/password is empty/i)).not.toBeInTheDocument();
+  });
+});

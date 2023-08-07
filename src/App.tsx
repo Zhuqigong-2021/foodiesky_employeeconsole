@@ -15,6 +15,7 @@ import { Routes, Route, Link, useNavigate } from "react-router-dom";
 
 import SkyLogo from "./assets/Logo.svg";
 import smallSkyLogo from "./assets/smallLogo.svg";
+import clouds from "../public/weather/clouds.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Storage/redux/store";
@@ -38,6 +39,7 @@ import {
   OrderManagement,
   Statistics,
 } from "./page";
+import { useGetWeatherQuery } from "./Apis/weatherApi";
 
 const items: MenuProps["items"] = [
   {
@@ -53,10 +55,51 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { width } = useScreenSize();
+  const [imgId, setImgId] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
   const [status, setStatus] = useState(false);
+  const { data, isLoading } = useGetWeatherQuery({});
+  const [temp, setTemp] = useState("");
+  const [description, setDescription] = useState("");
+  const [weatherSrc, setWeatherSrc] = useState("");
 
+  console.log("weather data:", data);
+  useEffect(() => {
+    if (data) {
+      setTemp(Math.round(data.main.temp) + "°C");
+      setDescription(data.weather[0].main);
+      switch (data.weather[0].main) {
+        case "Clouds":
+          setWeatherSrc("clouds");
+          break;
+        case "Clear":
+          setWeatherSrc("clear");
+          break;
+        case "Drizzle":
+          setWeatherSrc("drizzle");
+          break;
+        case "Humidity":
+          setWeatherSrc("humidity");
+          break;
+        case "Mist":
+          setWeatherSrc("mist");
+          break;
+        case "Rain":
+          setWeatherSrc("rain");
+          break;
+        case "Snow":
+          setWeatherSrc("snow");
+          break;
+        case "Wind":
+          setWeatherSrc("wind");
+          break;
+        default:
+          setWeatherSrc("unknow");
+      }
+    }
+  }, [data]);
+  console.log(weatherSrc);
   function handleSignout() {
     localStorage.removeItem("currentUser");
 
@@ -78,7 +121,6 @@ function App() {
     if (width < 700) {
       setCollapsed(true);
     }
-    console.log(width);
   }, [width]);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
@@ -175,7 +217,7 @@ function App() {
             <div className="flex items-center space-x-2">
               <div className="flex space-x-2 items-center">
                 <img
-                  src={"https://randomuser.me/api/portraits/men/2.jpg"}
+                  src={`https://randomuser.me/api/portraits/men/${userData.id}.jpg`}
                   className="h-10 w-10 rounded-full border-[3px] border-white"
                 />
                 <span className="capitalize">{userData.name}</span>
@@ -217,8 +259,8 @@ function App() {
           <Menu
             theme="dark"
             mode="inline"
-            className="mt-16 space-y-6"
-            defaultSelectedKeys={["1"]}
+            className="mt-16 space-y-6 "
+            // defaultSelectedKeys={["1"]}
             items={[
               {
                 key: "1",
@@ -296,6 +338,33 @@ function App() {
                       Employee
                     </span>
                   </Link>
+                ),
+              },
+            ]}
+          />
+          <Menu
+            theme="dark"
+            mode="inline"
+            className="mt-24 space-y-6  absolute bottom-4 left-0 right-0  "
+            // defaultSelectedKeys={["1"]}
+
+            items={[
+              {
+                key: "1",
+                icon: (
+                  <img
+                    src={`/weather/${weatherSrc}.png`}
+                    alt="description"
+                    className="w-6 h-6 absolute top-2 -translate-x-1 "
+                  />
+                ),
+                label: (
+                  <div className=" ml-4">
+                    <span className="font-semibold space-x-2 origin-bottom flex">
+                      <span>{temp}</span>
+                      <span>{description}</span>
+                    </span>
+                  </div>
                 ),
               },
             ]}

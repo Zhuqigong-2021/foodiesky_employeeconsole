@@ -10,7 +10,9 @@ export const handlers = [
   rest.post("api/auth/login", (_req, res, ctx) => {
     return res(
       ctx.json({
-        email: "admin",
+        code: "1",
+        username: "admin",
+        name: "admin",
         token:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZ…xNjJ9.dCA4R3t9Q2hliVtakxwqiUl1BE0wnfYbPqUQ542J-Ac",
       }),

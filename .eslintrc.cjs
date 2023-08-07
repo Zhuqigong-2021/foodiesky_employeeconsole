@@ -1,5 +1,4 @@
 /* eslint-env node */
-
 module.exports = {
   root: true,
   env: { browser: true, es2020: true, es5: true },
@@ -19,7 +18,8 @@ module.exports = {
   plugins: ["react-refresh", "@typescript-eslint"],
   rules: {
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
