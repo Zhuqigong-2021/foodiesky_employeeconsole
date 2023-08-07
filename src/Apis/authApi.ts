@@ -21,3 +21,5 @@ const authApi = createApi({
 
 export const { useLoginUserMutation } = authApi;
 export default authApi;
+
+// https://api.openweathermap.org/data/2.5/weather?q=montreal&appid={apikey}&units=Metric
