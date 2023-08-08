@@ -15,7 +15,6 @@ import { Routes, Route, Link, useNavigate } from "react-router-dom";
 
 import SkyLogo from "./assets/Logo.svg";
 import smallSkyLogo from "./assets/smallLogo.svg";
-import clouds from "../public/weather/clouds.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Storage/redux/store";
@@ -40,6 +39,9 @@ import {
   Statistics,
 } from "./page";
 import { useGetWeatherQuery } from "./Apis/weatherApi";
+import AddEmployee from "./components/employee/AddEmployee";
+import { UpdateEmployee } from "./components/employee";
+import { AddCategory, UpdateCategory } from "./components/category";
 
 const items: MenuProps["items"] = [
   {
@@ -55,7 +57,7 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { width } = useScreenSize();
-  const [imgId, setImgId] = useState(1);
+
   const [collapsed, setCollapsed] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
   const [status, setStatus] = useState(false);
@@ -64,9 +66,8 @@ function App() {
   const [description, setDescription] = useState("");
   const [weatherSrc, setWeatherSrc] = useState("");
 
-  console.log("weather data:", data);
   useEffect(() => {
-    if (data) {
+    if (!isLoading && data) {
       setTemp(Math.round(data.main.temp) + "°C");
       setDescription(data.weather[0].main);
       switch (data.weather[0].main) {
@@ -99,7 +100,7 @@ function App() {
       }
     }
   }, [data]);
-  console.log(weatherSrc);
+
   function handleSignout() {
     localStorage.removeItem("currentUser");
 
@@ -403,8 +404,24 @@ function App() {
               element={<PrivateRoute component={CategoryManagement} />}
             />
             <Route
+              path="/category/new"
+              element={<PrivateRoute component={AddCategory} />}
+            />
+            <Route
+              path="/category/:id"
+              element={<PrivateRoute component={UpdateCategory} />}
+            />
+            <Route
               path="/employeemanagement"
               element={<PrivateRoute component={EmployeeManagement} />}
+            />
+            <Route
+              path="/employee/new"
+              element={<PrivateRoute component={AddEmployee} />}
+            />
+            <Route
+              path="/employee/:id"
+              element={<PrivateRoute component={UpdateEmployee} />}
             />
             <Route path="/login" element={<Login />} />
           </Routes>

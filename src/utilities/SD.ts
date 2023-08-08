@@ -4,3 +4,8 @@ export enum SD_WeatherTypes {
   API_KEY = "",
   UNITS = "Metric",
 }
+
+export enum SD_Status {
+  ENABLE = "1",
+  BLOCK = "0",
+}

@@ -1,6 +1,6 @@
 import tofu from "../assets/tofu.jpg";
 import Logo from "../assets/Logo.svg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import inputHelper from "../helper/inputHelper";
 import { useLoginUserMutation } from "../Apis/authApi";
 
