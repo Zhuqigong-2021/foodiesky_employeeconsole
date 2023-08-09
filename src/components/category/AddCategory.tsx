@@ -17,7 +17,7 @@ const AddCategory = () => {
 
   const [userInput, setUserInput] = useState({
     name: "",
-    type: "",
+    type: "1",
     sort: "",
   });
   useEffect(() => {
@@ -63,7 +63,7 @@ const AddCategory = () => {
 
     setUserInput({
       name: "",
-      type: "",
+      type: "1",
       sort: "",
     });
   };
@@ -107,7 +107,7 @@ const AddCategory = () => {
           />
         </div>
 
-        <div>
+        {/* <div>
           <p className="mb-4">Type:</p>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
@@ -134,8 +134,8 @@ const AddCategory = () => {
             </div>
           </div>
           <div className="text-red-500 mt-5">{error && error}</div>
-        </div>
-
+        </div> */}
+        <div className="text-red-500 mt-5">{error && error}</div>
         <div className="flex flex-col md:flex-row lg:flex-row lg:space-x-4 md:space-x-4 space-x-0 space-y-4 md:space-y-0 lg:space-y-0 w-full justify-center border-t py-4 ">
           <button
             className="border py-2 px-4 rounded-md"

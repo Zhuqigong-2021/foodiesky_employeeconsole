@@ -31,18 +31,13 @@ const CategoryManagement: React.FC = () => {
     name: search,
     page: pagination.current,
     pageSize: pagination.pageSize,
-    type: "",
+    type: "1",
   });
   const [deleteCategory] = useDeleteCategoryMutation();
   const [blockUser] = useBlockCategoryMutation();
   const [enableUser] = useEnableCategoryMutation();
   const [total, setTotal] = useState(0);
   const [categoriesData, setCategoriesData] = useState([]);
-
-  const confirm = (e: React.MouseEvent<HTMLElement> | undefined) => {
-    e?.preventDefault();
-    message.success("Click on Yes");
-  };
 
   const cancel = (e: React.MouseEvent<HTMLElement> | undefined) => {
     e?.preventDefault();
@@ -106,12 +101,12 @@ const CategoryManagement: React.FC = () => {
       key: "name",
       render: (text: string) => <a>{text}</a>,
     },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (text: string) => <a>{text == "1" ? "dish" : "others"}</a>,
-    },
+    // {
+    //   title: "Type",
+    //   dataIndex: "type",
+    //   key: "type",
+    //   render: (text: string) => <a>{text == "1" ? "dish" : "others"}</a>,
+    // },
     {
       title: "Sort",
       dataIndex: "sort",

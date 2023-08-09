@@ -81,13 +81,13 @@ const EmployeeManagement = () => {
     //   key: "id",
     // },
     {
-      title: "Name",
+      title: "Employ Name",
       dataIndex: "name",
       key: "name",
       render: (text: string) => <a>{text}</a>,
     },
     {
-      title: "User Name",
+      title: "Account",
       dataIndex: "username",
       key: "username",
     },
@@ -110,7 +110,7 @@ const EmployeeManagement = () => {
     },
 
     {
-      title: "Last time",
+      title: "Last Operation time",
       key: "updateTime",
       dataIndex: "updateTime",
     },
