@@ -71,7 +71,7 @@ const UpdateCategory = () => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white py-8">
       <div className="flex items-center">
         <div
           className="flex space-x-2 items-center border-r px-4 "

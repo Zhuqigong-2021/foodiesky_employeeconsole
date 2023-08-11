@@ -1,4 +1,13 @@
-import { Badge, Space, Table, message, Spin, Popconfirm, Divider } from "antd";
+import {
+  Badge,
+  Space,
+  Table,
+  message,
+  Spin,
+  Popconfirm,
+  Divider,
+  Input,
+} from "antd";
 import Button from "antd/lib/button";
 import QueueAnim from "rc-queue-anim";
 import type { ColumnsType } from "antd/es/table";
@@ -204,25 +213,35 @@ const CategoryManagement: React.FC = () => {
             <div className="flex space-x-2 items-center ">
               <span className="font-bold">Category:</span>
               <div className="relative flex space-x-2">
-                <input
+                {/* <input
                   type="text"
                   className="px-2 border border-gray-100"
                   placeholder="search..."
                   onChange={(e) => setSearch(e.target.value)}
+                /> */}
+                <Input
+                  placeholder="search category.."
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-                <button className="absolute right-0 top-0 bottom-2">
+                <button className="absolute right-0 top-0 p-1">
                   <SearchOutlined className="h-full" />
                 </button>
               </div>
             </div>
-            <button
+            {/* <button
               className="bg-yellow-500 text-white rounded-md mx-4 px-2 py-1 absolute right-0"
               onClick={() => navigate("/category/new")}
             >
               +Add dish category
-            </button>
+            </button> */}
+            <Button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white border-none hover:text-red-300 mx-4"
+              onClick={() => navigate("/category/new")}
+            >
+              +Add dish category
+            </Button>
           </div>
-
+          <Divider />
           <Table
             columns={columns}
             rowKey="id"

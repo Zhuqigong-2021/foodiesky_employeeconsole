@@ -10,8 +10,14 @@ import { RxDashboard } from "react-icons/rx";
 import { RiListOrdered, RiShutDownLine } from "react-icons/ri";
 import { BiSolidDish } from "react-icons/bi";
 import { CgTrending } from "react-icons/cg";
-import { Layout, Menu, Button } from "antd";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Layout, Menu, Button, Divider } from "antd";
+import {
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
 import SkyLogo from "./assets/Logo.svg";
 import smallSkyLogo from "./assets/smallLogo.svg";
@@ -57,6 +63,8 @@ function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { width } = useScreenSize();
+  const location = useLocation();
+  console.log(location);
 
   const [collapsed, setCollapsed] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
@@ -254,7 +262,7 @@ function App() {
         </div>
       </Header>
 
-      <Layout className="overflow-x-scroll">
+      <Layout>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className="demo-logo-vertical" />
           <Menu
@@ -378,53 +386,97 @@ function App() {
             minHeight: 280,
             background: "white",
           }}
-          className="overflow-x-scroll"
+          className="overflow-x-scroll relative"
         >
-          <Routes>
-            <Route path="/" element={<PrivateRoute component={DashBoard} />} />
-            <Route
-              path="/dashBoard"
-              element={<PrivateRoute component={DashBoard} />}
-            />
-            <Route
-              path="/statistics"
-              element={<PrivateRoute component={Statistics} />}
-            />
-            <Route
-              path="/ordermanagement"
-              element={<PrivateRoute component={OrderManagement} />}
-            />
-            <Route
-              path="/dishmanagement"
-              element={<PrivateRoute component={DishManagement} />}
-            />
+          <Content
+            style={{
+              margin: "0px 0px",
 
-            <Route
-              path="/categorymanagement"
-              element={<PrivateRoute component={CategoryManagement} />}
-            />
-            <Route
-              path="/category/new"
-              element={<PrivateRoute component={AddCategory} />}
-            />
-            <Route
-              path="/category/:id"
-              element={<PrivateRoute component={UpdateCategory} />}
-            />
-            <Route
-              path="/employeemanagement"
-              element={<PrivateRoute component={EmployeeManagement} />}
-            />
-            <Route
-              path="/employee/new"
-              element={<PrivateRoute component={AddEmployee} />}
-            />
-            <Route
-              path="/employee/:id"
-              element={<PrivateRoute component={UpdateEmployee} />}
-            />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+              minHeight: 580,
+              background: "white",
+            }}
+            // className="px-8 "
+          >
+            <div
+              style={{
+                // background: "white",
+                // border: "1px solid black",
+                padding: 0,
+              }}
+              className="flex items-end w-full    bg-stone-100 absolute left-0 right-0 top-0 "
+            >
+              <h1
+                className="font-black text-xl text-gray-600  w-full pb-4  "
+                // style={{ textShadow: "3px 3px 1px rgba(0,0,0,0.3)" }}
+                // style={{
+                //   borderBottom:
+                //     location.pathname.includes("dash") ||
+                //     location.pathname.includes("statistics")
+                //       ? ""
+                //       : "4px solid rgba(0,0,0,0.1)",
+                // }}
+              >
+                {location.pathname.includes("dish")
+                  ? "DISH MANAGEMENT"
+                  : location.pathname.includes("category")
+                  ? "CATEGORY MANAGEMENT"
+                  : location.pathname.includes("employee")
+                  ? "EMPLOYEE MANAGEMENT"
+                  : location.pathname.includes("order")
+                  ? "ORDER MANAGEMENT"
+                  : ""}
+              </h1>
+            </div>
+
+            <Routes>
+              <Route
+                path="/"
+                element={<PrivateRoute component={DashBoard} />}
+              />
+              <Route
+                path="/dashBoard"
+                element={<PrivateRoute component={DashBoard} />}
+              />
+              <Route
+                path="/statistics"
+                element={<PrivateRoute component={Statistics} />}
+              />
+              <Route
+                path="/ordermanagement"
+                element={<PrivateRoute component={OrderManagement} />}
+              />
+              <Route
+                path="/dishmanagement"
+                element={<PrivateRoute component={DishManagement} />}
+              />
+
+              <Route
+                path="/categorymanagement"
+                element={<PrivateRoute component={CategoryManagement} />}
+              />
+              <Route
+                path="/category/new"
+                element={<PrivateRoute component={AddCategory} />}
+              />
+              <Route
+                path="/category/:id"
+                element={<PrivateRoute component={UpdateCategory} />}
+              />
+              <Route
+                path="/employeemanagement"
+                element={<PrivateRoute component={EmployeeManagement} />}
+              />
+              <Route
+                path="/employee/new"
+                element={<PrivateRoute component={AddEmployee} />}
+              />
+              <Route
+                path="/employee/:id"
+                element={<PrivateRoute component={UpdateEmployee} />}
+              />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </Content>
         </Content>
       </Layout>
     </Layout>
