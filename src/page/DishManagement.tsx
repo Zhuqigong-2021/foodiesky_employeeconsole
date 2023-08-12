@@ -37,8 +37,11 @@ import {
   useGetDishesQuery,
 } from "../Apis/dishApi";
 import apiResponse from "../interfaces/apiResponse";
+import { useDispatch } from "react-redux";
+import { setCurrentCategoriesArr } from "../Storage/redux/categorySlice";
 
 const DishManagement: React.FC = () => {
+  const dispatch = useDispatch();
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5, // Default page size
@@ -110,6 +113,12 @@ const DishManagement: React.FC = () => {
       // { value: "14", label: "update " },
     }
   }, [categoryData]);
+
+  useEffect(() => {
+    if (finalCategoryData) {
+      dispatch(setCurrentCategoriesArr(finalCategoryData));
+    }
+  }, [finalCategoryData]);
 
   // useEffect(() => {
   //   console.log(search);
@@ -361,7 +370,7 @@ const DishManagement: React.FC = () => {
             <Button
               // type="primary"
               className="bg-yellow-500 hover:bg-yellow-600 text-white border-none hover:text-red-300 mx-4"
-              onClick={() => navigate("/category/new")}
+              onClick={() => navigate("/dish/new")}
             >
               +Add dish category
             </Button>

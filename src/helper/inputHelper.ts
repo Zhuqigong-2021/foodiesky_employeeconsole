@@ -7,7 +7,7 @@ const inputHelper = (
   data: any
 ) => {
   const tempData: any = { ...data };
-  tempData[e.target.name] = e.target.value;
+  tempData[e.currentTarget.name] = e.target.value;
   return tempData;
 };
 

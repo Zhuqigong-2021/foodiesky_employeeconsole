@@ -24,7 +24,6 @@ const AddEmployee = () => {
     setUserInput(tempData);
   };
 
-  console.log(userInput);
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");

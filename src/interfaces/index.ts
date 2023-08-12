@@ -1,3 +1,4 @@
 import userModel from "./userModel";
+import categoryModel from "./categoryModel";
 
-export type { userModel };
+export type { userModel, categoryModel };

@@ -39,13 +39,12 @@ const EmployeeManagement = () => {
     if (userdata) {
       setTotal(Number(userdata.apiResponse.data.total));
       setEmployeeData(userdata.apiResponse.data.records);
-      console.log(employeeData);
     }
   }, [userdata, search, pagination]);
 
-  useEffect(() => {
-    console.log(search);
-  }, [search]);
+  // useEffect(() => {
+  //   console.log(search);
+  // }, [search]);
 
   const handleBlock = async (userId: string) => {
     try {

@@ -10,7 +10,7 @@ import { RxDashboard } from "react-icons/rx";
 import { RiListOrdered, RiShutDownLine } from "react-icons/ri";
 import { BiSolidDish } from "react-icons/bi";
 import { CgTrending } from "react-icons/cg";
-import { Layout, Menu, Button, Divider } from "antd";
+import { Layout, Menu, Button } from "antd";
 import {
   Routes,
   Route,
@@ -45,9 +45,16 @@ import {
   Statistics,
 } from "./page";
 import { useGetWeatherQuery } from "./Apis/weatherApi";
-import AddEmployee from "./components/employee/AddEmployee";
-import { UpdateEmployee } from "./components/employee";
-import { AddCategory, UpdateCategory } from "./components/category";
+// import AddEmployee from "./components/employee/AddEmployee";
+// import { UpdateEmployee } from "./components/employee";
+// import { AddCategory, UpdateCategory } from "./components/category";
+import {
+  AddEmployee,
+  UpdateEmployee,
+  AddCategory,
+  UpdateCategory,
+  AddDish,
+} from "./components/";
 
 const items: MenuProps["items"] = [
   {
@@ -64,7 +71,6 @@ function App() {
   const dispatch = useDispatch();
   const { width } = useScreenSize();
   const location = useLocation();
-  console.log(location);
 
   const [collapsed, setCollapsed] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
@@ -448,6 +454,10 @@ function App() {
               <Route
                 path="/dishmanagement"
                 element={<PrivateRoute component={DishManagement} />}
+              />
+              <Route
+                path="/dish/new"
+                element={<PrivateRoute component={AddDish} />}
               />
 
               <Route

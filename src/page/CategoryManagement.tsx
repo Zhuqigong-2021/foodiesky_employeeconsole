@@ -57,13 +57,12 @@ const CategoryManagement: React.FC = () => {
     if (categoryData) {
       setTotal(Number(categoryData.apiResponse.data.total));
       setCategoriesData(categoryData.apiResponse.data.records);
-      console.log(setCategoriesData);
     }
   }, [categoryData, search, pagination]);
 
-  useEffect(() => {
-    console.log(search);
-  }, [search]);
+  // useEffect(() => {
+  //   console.log(search);
+  // }, [search]);
 
   const handleBlock = async (userId: string) => {
     try {
