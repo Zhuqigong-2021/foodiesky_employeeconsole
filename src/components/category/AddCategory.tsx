@@ -43,10 +43,7 @@ const AddCategory = () => {
       setError("category name is empty");
       return;
     }
-    // if (!userInput.type) {
-    //   setError("type is empty");
-    //   return;
-    // }
+
     if (!userInput.sort) {
       setError("sort is empty");
       return;

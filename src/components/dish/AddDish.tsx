@@ -61,25 +61,18 @@ const AddDish = () => {
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-    let file;
-    if (fileList) {
-      file = fileList[0]?.originFileObj;
-    }
 
-    if (file) {
-      setSelectedFile(file as File);
-    } else {
-      setSelectedFile(null);
-    }
+    let file = newFileList[0].originFileObj;
+    setSelectedFile(file as File);
 
-    if (!selectedFile) {
+    if (!file) {
       message.error("No file selected");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    console.log(selectedFile);
+    formData.append("file", file);
+
     const config = {
       headers: {
         "Content-type": "multipart/form-data",
@@ -93,6 +86,7 @@ const AddDish = () => {
           formData,
           config
         );
+        console.log("response", response);
         if ("data" in response) {
           message.success("Image uploaded successfully");
           setSelectedFile(null);

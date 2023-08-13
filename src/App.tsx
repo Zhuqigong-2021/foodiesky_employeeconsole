@@ -45,9 +45,7 @@ import {
   Statistics,
 } from "./page";
 import { useGetWeatherQuery } from "./Apis/weatherApi";
-// import AddEmployee from "./components/employee/AddEmployee";
-// import { UpdateEmployee } from "./components/employee";
-// import { AddCategory, UpdateCategory } from "./components/category";
+
 import {
   AddEmployee,
   UpdateEmployee,
@@ -56,7 +54,6 @@ import {
   AddDish,
   UpdateDish,
 } from "./components/";
-import UploadComponent from "./components/dish/UploadComponent";
 
 const items: MenuProps["items"] = [
   {

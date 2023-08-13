@@ -3,13 +3,11 @@ import { FormEvent, useEffect, useState } from "react";
 import inputHelper from "../../helper/inputHelper";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Input, Select, Upload, message, Button, Progress, Modal } from "antd";
-import { useAddCategoryMutation } from "../../Apis/categoryApi";
+import { Input, Select, Upload, message, Modal } from "antd";
+
 import { RootState } from "../../Storage/redux/store";
 import { useSelector } from "react-redux";
 import { categoryModel } from "../../interfaces";
-
-import { useUploadImageMutation } from "../../Apis/commonApi";
 
 import {} from "antd";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
@@ -28,14 +26,14 @@ const getBase64 = (file: RcFile): Promise<string> =>
 
 const UpdateDish = () => {
   const [imageToStore, setImageToStore] = useState<any>();
-  const [imageToDisplay, setImageToDisplay] = useState<string>("");
+
   const navigate = useNavigate();
 
   const { id } = useParams();
   const [error, setError] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
   const [updateDish] = useUpdateDishMutation();
-  const [uploadImage] = useUploadImageMutation();
+
   const { data, isLoading } = useGetDishQuery({ id });
   //   const [dishData, setDishData] = useState();
   //   const categories = useSelector(
@@ -49,7 +47,6 @@ const UpdateDish = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     if (data && id) {
@@ -62,7 +59,6 @@ const UpdateDish = () => {
         image: data.data.image,
         flavour: [],
       });
-      setImageUrl(data.data.image);
     }
   }, [data]);
 
@@ -85,30 +81,19 @@ const UpdateDish = () => {
   };
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-  //   setFileList(newFileList);
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-    let file;
-    if (fileList) {
-      file = fileList[0]?.originFileObj;
-    }
-    console.log(fileList);
-    if (file) {
-      setSelectedFile(file as File);
-    } else {
-      setSelectedFile(null);
-    }
 
-    if (!selectedFile) {
+    let file = newFileList[0]?.originFileObj;
+    setSelectedFile(file as File);
+    if (!file) {
       message.error("No file selected");
       return;
     }
-
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    formData.append("file", file);
 
     const config = {
       headers: {
@@ -163,9 +148,6 @@ const UpdateDish = () => {
     }
   }, [uploadedImage]);
 
-  const handleRemove = () => {
-    setUploadedImage(null);
-  };
   const categories: categoryModel[] = useSelector(
     (state: RootState) => state.categoryStore.categories
   );
