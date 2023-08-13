@@ -57,18 +57,18 @@ const dishApi = createApi({
       invalidatesTags: ["dishes"],
     }),
 
-    addCategory: builder.mutation({
-      query: (newCategory) => ({
+    addDish: builder.mutation({
+      query: (newDish) => ({
         url: "",
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: newCategory,
+        body: newDish,
       }),
       invalidatesTags: ["dishes"],
     }),
-    getCategory: builder.query({
+    getDish: builder.query({
       query: ({ id }) => ({
         url: `/${id}`,
         method: "GET",
@@ -76,14 +76,14 @@ const dishApi = createApi({
 
       providesTags: ["dishes"],
     }),
-    updateCategory: builder.mutation({
-      query: (updatedCategory) => ({
+    updateDish: builder.mutation({
+      query: (updatedDish) => ({
         url: "",
         method: "Put",
         headers: {
           "Content-type": "application/json",
         },
-        body: updatedCategory,
+        body: updatedDish,
       }),
       invalidatesTags: ["dishes"],
     }),
@@ -106,9 +106,9 @@ export const {
   useGetDishesQuery,
   useBlockDishMutation,
   useEnableDishMutation,
-  useAddCategoryMutation,
-  useGetCategoryQuery,
-  useUpdateCategoryMutation,
+  useAddDishMutation,
+  useGetDishQuery,
+  useUpdateDishMutation,
   useDeleteBulkDishMutation,
 } = dishApi;
 export default dishApi;

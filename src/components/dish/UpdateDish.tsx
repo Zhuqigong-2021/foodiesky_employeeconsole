@@ -1,17 +1,20 @@
 import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
 import { FormEvent, useEffect, useState } from "react";
 import inputHelper from "../../helper/inputHelper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Input, Select, Upload, message, Progress, Modal } from "antd";
-
+import { Input, Select, Upload, message, Button, Progress, Modal } from "antd";
+import { useAddCategoryMutation } from "../../Apis/categoryApi";
 import { RootState } from "../../Storage/redux/store";
 import { useSelector } from "react-redux";
 import { categoryModel } from "../../interfaces";
 
+import { useUploadImageMutation } from "../../Apis/commonApi";
+
+import {} from "antd";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
+import { useGetDishQuery, useUpdateDishMutation } from "../../Apis/dishApi";
 import axios from "axios";
-import { useAddDishMutation } from "../../Apis/dishApi";
 
 const { TextArea } = Input;
 
@@ -23,32 +26,57 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const AddDish = () => {
+const UpdateDish = () => {
   const [imageToStore, setImageToStore] = useState<any>();
-
+  const [imageToDisplay, setImageToDisplay] = useState<string>("");
   const navigate = useNavigate();
 
+  const { id } = useParams();
   const [error, setError] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
-  const [AddDish] = useAddDishMutation();
-
+  const [updateDish] = useUpdateDishMutation();
+  const [uploadImage] = useUploadImageMutation();
+  const { data, isLoading } = useGetDishQuery({ id });
+  //   const [dishData, setDishData] = useState();
+  //   const categories = useSelector(
+  //     (state: RootState) => state.category.categories
+  //     );
   const [uploadedImage, setUploadedImage] = useState<UploadFile<any> | null>(
     null
   );
-  const [imageUrl, setImageUrl] = useState("");
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    if (data && id) {
+      setUserInput({
+        id: id,
+        name: data.data.name,
+        categoryId: data.data.categoryId,
+        price: data.data.price,
+        description: data.data.description,
+        image: data.data.image,
+        flavour: [],
+      });
+      setImageUrl(data.data.image);
+    }
+  }, [data]);
 
   const handleCancel = () => setPreviewOpen(false);
 
   const handlePreview = async (file: any) => {
     if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
+      if (data) {
+        setPreviewImage(data.data.image);
+      } else {
+        file.preview = await getBase64(file.originFileObj as RcFile);
+      }
     }
-
+    // const response = await uploader(formData);
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
     setPreviewTitle(
@@ -57,6 +85,8 @@ const AddDish = () => {
   };
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  // const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+  //   setFileList(newFileList);
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
@@ -65,7 +95,7 @@ const AddDish = () => {
     if (fileList) {
       file = fileList[0]?.originFileObj;
     }
-
+    console.log(fileList);
     if (file) {
       setSelectedFile(file as File);
     } else {
@@ -79,13 +109,14 @@ const AddDish = () => {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    console.log(selectedFile);
+
     const config = {
       headers: {
         "Content-type": "multipart/form-data",
         token: localStorage.getItem("token"),
       },
     };
+
     try {
       if (formData) {
         const response = await axios.post(
@@ -93,14 +124,14 @@ const AddDish = () => {
           formData,
           config
         );
-        if ("data" in response) {
-          message.success("Image uploaded successfully");
-          setSelectedFile(null);
-          setImageUrl(response.data.data);
+
+        if (response.data) {
+          console.log("Upload success:", response.data);
           setImageToStore(response.data.data);
-          // Clear selected file
+
+          message.success("Image uploaded successfully");
+          setSelectedFile(null); // Clear selected file
         } else {
-          // console.error("Upload error:", response.error);
           message.error("Image upload failed");
         }
       }
@@ -116,39 +147,15 @@ const AddDish = () => {
         <PlusOutlined />
         <div style={{ marginTop: 8 }}>Upload</div>
       </div>
-      <div className="flex flex-col absolute left-48 -translate-y-5 items-center space-y-2 text-left border p-2 ">
+      {/* <div className="flex flex-col absolute left-72 -translate-y-5 items-center space-y-2 text-left border p-2 ">
         <div className="text-left w-full">Image size not exceeding 2MB</div>
         <div className="text-left w-full">Only PNG, JPEG, and JPG allowed</div>
         <div className="text-left w-full">
           Images size recommended 200x200 | 300x300.
         </div>
-      </div>
+      </div> */}
     </div>
   );
-
-  //   const handleImageChange = async (
-  //     info: UploadChangeParam<UploadFile<any>>
-  //   ) => {
-  //     const formData = new FormData();
-  //     if (info.file) {
-  //       //   formData.append("image", info.file.thumbUrl);
-  //       setUploadedImage(info.file);
-  //       console.log(info.file);
-  //     }
-
-  //     try {
-  //       const response = await uploader(formData);
-
-  //       message.success("Image uploaded successfully");
-  //     } catch (error) {
-  //       console.error("Upload error:", error);
-  //       message.error("Image upload failed");
-  //     }
-  //     // }
-  //     // setUploadedImage(info.file);
-  //     // console.log(info.file);
-  //     // setUploadedImage(info.file);
-  //   };
 
   useEffect(() => {
     if (uploadedImage) {
@@ -156,18 +163,21 @@ const AddDish = () => {
     }
   }, [uploadedImage]);
 
+  const handleRemove = () => {
+    setUploadedImage(null);
+  };
   const categories: categoryModel[] = useSelector(
     (state: RootState) => state.categoryStore.categories
   );
 
   const [userInput, setUserInput] = useState({
+    id: "",
     name: "",
     categoryId: "",
     price: "",
     description: "",
-    falvour: [],
+    flavour: [],
     image: "",
-    status: "0",
   });
 
   const handleUserInput = (
@@ -183,10 +193,17 @@ const AddDish = () => {
   const handleDishCategoryChange = (value: string) => {
     setCategoryValue(value);
   };
-
+  //   useEffect(() => {
+  //     console.log(userInput);
+  //   }, [userInput]);
   useEffect(() => {
-    setUserInput({ ...userInput, categoryId: categoryValue, image: imageUrl });
-  }, [categoryValue, imageUrl]);
+    if (imageToStore) {
+      setUserInput({ ...userInput, image: imageToStore });
+    }
+    if (categoryValue) {
+      setUserInput({ ...userInput, categoryId: categoryValue });
+    }
+  }, [categoryValue, imageToStore]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -194,7 +211,7 @@ const AddDish = () => {
     setError("");
 
     if (!userInput.name) {
-      setError("dish name is empty");
+      setError("category name is empty");
       return;
     }
     if (!userInput.categoryId) {
@@ -209,59 +226,27 @@ const AddDish = () => {
       setError("you should input some description");
       return;
     }
-    if (!imageToStore) {
+    if (!imageToStore && !userInput.image) {
       setError("you should upload an image");
       return;
     }
 
     // setLoading(true);
-
-    await AddDish({ ...userInput });
+    console.log(userInput);
+    await updateDish({ ...userInput });
     navigate("/dishmanagement");
-    message.success("you have succefully added an new dish");
+    message.success("you have succefully updated an new dish");
 
     setUserInput({
+      id: "",
       name: "",
       categoryId: "",
       price: "",
       description: "",
-      falvour: [],
+      flavour: [],
       image: "",
-      status: "0",
     });
   };
-
-  // const [progress, setProgress] = useState(0);
-
-  // const handleUpload = async (options: any) => {
-  //   const { onSuccess, onError, file, onProgress } = options;
-
-  //   const fmData = new FormData();
-  //   const config = {
-  //     headers: { "content-type": "multipart/form-data" },
-  //     token: localStorage.getItem("token"),
-  //     onUploadProgress: (event: any) => {
-  //       const percent = Math.floor((event.loaded / event.total) * 100);
-  //       setProgress(percent);
-  //       if (percent === 100) {
-  //         setTimeout(() => setProgress(0), 1000);
-  //       }
-  //       onProgress({ percent: (event.loaded / event.total) * 100 });
-  //     },
-  //   };
-  //   fmData.append("image", file);
-  //   try {
-  //     const res = await axios.post("/api/admin/common/upload", fmData, config);
-  //     setImageUrl(res.data.data);
-  //     setImageToStore(res.data.data);
-  //     onSuccess("Ok");
-  //     message.success("you have uploaded an image successfully");
-  //   } catch (err) {
-  //     console.log("Eroor: ", err);
-  //     message.error("upload failed");
-  //     onError({ err });
-  //   }
-  // };
 
   return (
     <div className="bg-white py-8">
@@ -272,7 +257,7 @@ const AddDish = () => {
         >
           <ArrowLeftOutlined /> <span>Back</span>
         </div>
-        <span className="px-4 font-extrabold">Add Dish</span>
+        <span className="px-4 font-extrabold">Update Dish</span>
       </div>
       <form
         action=""
@@ -285,7 +270,6 @@ const AddDish = () => {
 
             <Input
               placeholder="search dish name.."
-              // className="min-w-96"
               name="name"
               value={userInput.name}
               style={{ width: "260px" }}
@@ -320,27 +304,37 @@ const AddDish = () => {
           </div>
         </div>
         <div className="flex  ">
+          {!fileList.length && (
+            <img
+              src={data?.data.image}
+              alt=""
+              className="h-24 w-24 rounded-lg mr-4 "
+            />
+          )}
           <Upload
-            // customRequest={handleUpload}
+            // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             listType="picture-card"
             fileList={fileList}
-            accept="image/*"
+            // showUploadList={false}
             beforeUpload={() => false}
             onPreview={handlePreview}
             onChange={handleChange}
             maxCount={1}
           >
             {fileList.length >= 1 ? null : uploadButton}
-            {/* {progress > 0 ? <Progress percent={progress} /> : null} */}
           </Upload>
-
           <Modal
             open={previewOpen}
             title={previewTitle}
             footer={null}
             onCancel={handleCancel}
           >
-            <img alt="example" style={{ width: "100%" }} src={previewImage} />
+            <img
+              alt="example"
+              style={{ width: "100%" }}
+              src={previewImage}
+              className="m-2"
+            />
           </Modal>
         </div>
 
@@ -362,7 +356,7 @@ const AddDish = () => {
         <div className="flex flex-col md:flex-row lg:flex-row lg:space-x-4 md:space-x-4 space-x-0 space-y-4 md:space-y-0 lg:space-y-0 w-full justify-center border-t py-4 ">
           <button
             className="border py-2 px-4 rounded-md"
-            onClick={() => navigate("/categorymanagement")}
+            onClick={() => navigate("/dishmanagement")}
           >
             Cancel
           </button>
@@ -378,4 +372,4 @@ const AddDish = () => {
   );
 };
 
-export default AddDish;
+export default UpdateDish;

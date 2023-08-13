@@ -57,7 +57,7 @@ const DishManagement: React.FC = () => {
     page: pagination.current,
     pageSize: pagination.pageSize,
     categoryId: categoryId ? categoryId : "",
-    status: status,
+    status: status ? status : "",
   });
   const { data: categoryData } = useGetCategoriesQuery({
     page: pagination.current,
@@ -235,7 +235,7 @@ const DishManagement: React.FC = () => {
           <a>
             <EditOutlined
               className="bg-indigo-400 p-2 rounded-lg text-white"
-              onClick={() => navigate(`/category/${record.id}`)}
+              onClick={() => navigate(`/dish/${record.id}`)}
             />
           </a>
 

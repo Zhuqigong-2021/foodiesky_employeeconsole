@@ -54,7 +54,9 @@ import {
   AddCategory,
   UpdateCategory,
   AddDish,
+  UpdateDish,
 } from "./components/";
+import UploadComponent from "./components/dish/UploadComponent";
 
 const items: MenuProps["items"] = [
   {
@@ -458,6 +460,10 @@ function App() {
               <Route
                 path="/dish/new"
                 element={<PrivateRoute component={AddDish} />}
+              />
+              <Route
+                path="/dish/:id"
+                element={<PrivateRoute component={UpdateDish} />}
               />
 
               <Route
