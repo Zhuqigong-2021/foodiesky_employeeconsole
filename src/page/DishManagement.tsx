@@ -109,7 +109,7 @@ const DishManagement: React.FC = () => {
           label: item.name,
         }))
       );
-
+      console.log(arr);
       // { value: "14", label: "update " },
     }
   }, [categoryData]);

@@ -3,15 +3,12 @@ import { FormEvent, useEffect, useState } from "react";
 import inputHelper from "../../helper/inputHelper";
 import { useNavigate } from "react-router-dom";
 
-import { Input, Select, Upload, message, Progress, Modal } from "antd";
-
-import { RootState } from "../../Storage/redux/store";
-import { useSelector } from "react-redux";
-import { categoryModel } from "../../interfaces";
+import { Input, Select, Upload, message, Modal } from "antd";
 
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import axios from "axios";
 import { useAddDishMutation } from "../../Apis/dishApi";
+import { useGetAllCategoriesQuery } from "../../Apis/categoryApi";
 
 const { TextArea } = Input;
 
@@ -25,6 +22,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
 
 const AddDish = () => {
   const [imageToStore, setImageToStore] = useState<any>();
+  const { data } = useGetAllCategoriesQuery({});
 
   const navigate = useNavigate();
 
@@ -56,6 +54,18 @@ const AddDish = () => {
     );
   };
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    if (data) {
+      let arr = [];
+      arr = data.data.map((item: { id: string; name: string }) => ({
+        value: item.id,
+        label: item.name,
+      }));
+
+      setCategories(arr);
+    }
+  }, [data]);
 
   const handleChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -150,9 +160,9 @@ const AddDish = () => {
     }
   }, [uploadedImage]);
 
-  const categories: categoryModel[] = useSelector(
-    (state: RootState) => state.categoryStore.categories
-  );
+  // const categories: categoryModel[] = useSelector(
+  //   (state: RootState) => state.categoryStore.categories
+  // );
 
   const [userInput, setUserInput] = useState({
     name: "",

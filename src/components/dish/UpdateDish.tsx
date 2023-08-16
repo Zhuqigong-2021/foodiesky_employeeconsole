@@ -5,14 +5,11 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Input, Select, Upload, message, Modal } from "antd";
 
-import { RootState } from "../../Storage/redux/store";
-import { useSelector } from "react-redux";
-import { categoryModel } from "../../interfaces";
-
 import {} from "antd";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload";
 import { useGetDishQuery, useUpdateDishMutation } from "../../Apis/dishApi";
 import axios from "axios";
+import { useGetAllCategoriesQuery } from "../../Apis/categoryApi";
 
 const { TextArea } = Input;
 
@@ -34,7 +31,7 @@ const UpdateDish = () => {
   const [categoryValue, setCategoryValue] = useState("");
   const [updateDish] = useUpdateDishMutation();
 
-  const { data, isLoading } = useGetDishQuery({ id });
+  const { data } = useGetDishQuery({ id });
   //   const [dishData, setDishData] = useState();
   //   const categories = useSelector(
   //     (state: RootState) => state.category.categories
@@ -47,6 +44,19 @@ const UpdateDish = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const { data: allCategories } = useGetAllCategoriesQuery({});
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    if (allCategories) {
+      let arr = [];
+      arr = allCategories.data.map((item: { id: string; name: string }) => ({
+        value: item.id,
+        label: item.name,
+      }));
+
+      setCategories(arr);
+    }
+  }, [allCategories]);
 
   useEffect(() => {
     if (data && id) {
@@ -147,10 +157,6 @@ const UpdateDish = () => {
       setUploadedImage(uploadedImage);
     }
   }, [uploadedImage]);
-
-  const categories: categoryModel[] = useSelector(
-    (state: RootState) => state.categoryStore.categories
-  );
 
   const [userInput, setUserInput] = useState({
     id: "",

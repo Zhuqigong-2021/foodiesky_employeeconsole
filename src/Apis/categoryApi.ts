@@ -35,6 +35,15 @@ const categoryApi = createApi({
       providesTags: ["Categories"],
     }),
 
+    getAllCategories: builder.query({
+      query: () => ({
+        url: "",
+        method: "GET",
+      }),
+
+      providesTags: ["Categories"],
+    }),
+
     blockCategory: builder.mutation({
       query: ({ id }) => ({
         url: "status/" + SD_Status.BLOCK,
@@ -103,6 +112,7 @@ const categoryApi = createApi({
 });
 
 export const {
+  useGetAllCategoriesQuery,
   useGetCategoriesQuery,
   useBlockCategoryMutation,
   useEnableCategoryMutation,

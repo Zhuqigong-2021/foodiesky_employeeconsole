@@ -54,6 +54,11 @@ import {
   AddDish,
   UpdateDish,
 } from "./components/";
+import {
+  useGetShopStatusQuery,
+  useSetShopStatusMutation,
+} from "./Apis/shopApi";
+import apiResponse from "./interfaces/apiResponse";
 
 const items: MenuProps["items"] = [
   {
@@ -78,6 +83,14 @@ function App() {
   const [temp, setTemp] = useState("");
   const [description, setDescription] = useState("");
   const [weatherSrc, setWeatherSrc] = useState("");
+  const [setShopStatus] = useSetShopStatusMutation();
+  const { data: currentShopStatus } = useGetShopStatusQuery({});
+
+  useEffect(() => {
+    if (currentShopStatus) {
+      setStatus(Boolean(currentShopStatus.data));
+    }
+  }, [currentShopStatus]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -137,13 +150,23 @@ function App() {
     }
   }, [width]);
 
-  const onClick: MenuProps["onClick"] = ({ key }) => {
+  const onClick: MenuProps["onClick"] = async ({ key }) => {
     if (key == "1") {
-      setStatus(true);
-      message.info(`restaurant is set in bussiness`);
+      const { data }: apiResponse = await setShopStatus(1);
+      if (data) {
+        if (data.code == 1) {
+          setStatus(true);
+          message.info(`restaurant is set in bussiness`);
+        }
+      }
     } else {
-      message.info(`restaurant is set close`);
-      setStatus(false);
+      const { data }: apiResponse = await setShopStatus(0);
+      if (data) {
+        if (data.code == 1) {
+          setStatus(false);
+          message.info(`restaurant is set close`);
+        }
+      }
     }
   };
 

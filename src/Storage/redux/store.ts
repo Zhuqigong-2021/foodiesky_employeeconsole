@@ -8,6 +8,7 @@ import categoryApi from "../../Apis/categoryApi";
 import dishApi from "../../Apis/dishApi";
 import { categoryReducer } from "./categorySlice";
 import commonApi from "../../Apis/commonApi";
+import shopApi from "../../Apis/shopApi";
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [dishApi.reducerPath]: dishApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
+    [shopApi.reducerPath]: shopApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
@@ -27,7 +29,8 @@ const store = configureStore({
       .concat(userApi.middleware)
       .concat(categoryApi.middleware)
       .concat(dishApi.middleware)
-      .concat(commonApi.middleware),
+      .concat(commonApi.middleware)
+      .concat(shopApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
